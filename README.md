@@ -6,5 +6,7 @@ This is the repository for stage 1 of the project in COMP3100 Session 1 2023. Cl
 
 # Run a simulation
 
+You can run the simulation by going to the src/test folder and run the following commands in command line:
+
 1. Run server `$ ./ds-server -c [CONFIG FILE] -n [OPTION]...`
 2. Run client `$ java Client 127.0.0.1 50000`
