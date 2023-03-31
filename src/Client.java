@@ -95,7 +95,7 @@ public class Client {
     protected void send(String message) throws Exception {
         dout.write((message + "\n").getBytes());
         dout.flush();
-        System.out.println("SENT: " + message);
+        // System.out.println("SENT: " + message);
     }
 
     /**
@@ -105,7 +105,7 @@ public class Client {
     protected void receive() throws Exception {
         String str = bin.readLine();
         latestMessage = str.split(" ");
-        System.out.println("RCVD: " + str);
+        // System.out.println("RCVD: " + str);
     }
 
     /**
