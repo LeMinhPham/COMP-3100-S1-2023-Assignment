@@ -33,6 +33,12 @@ public class Client {
             scheduler = new LRRScheduler();
         } else if (args[0].equalsIgnoreCase("fc")) {
             scheduler = new FCScheduler();
+        } else if (args[0].equalsIgnoreCase("ff")) {
+            scheduler = new FFScheduler();
+        } else if (args[0].equalsIgnoreCase("bf")) {
+            scheduler = new BFScheduler();
+        } else if (args[0].equalsIgnoreCase("wf")) {
+            scheduler = new WFScheduler();
         } else {
             scheduler = new ATLScheduler();
         }
