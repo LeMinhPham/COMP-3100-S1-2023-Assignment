@@ -21,7 +21,7 @@ public class LRRScheduler extends Scheduler {
     }
 
     /**
-     * Schedules jobs based on the Largest Round Robin algorithm
+     * Schedules jobs based on the <b> Largest Round Robin </b> algorithm
      */
     @Override
     public void schedule() throws Exception {

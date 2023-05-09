@@ -6,6 +6,9 @@ public class FFScheduler extends Scheduler {
         super();
     }
 
+    /**
+     * Schedules jobs based on the <b> First Fit </b> algorithm
+     */
     @Override
     public void schedule() throws Exception {
         // Start communication

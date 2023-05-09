@@ -7,7 +7,7 @@ public class FCScheduler extends Scheduler {
     }
 
     /**
-     * Schedules jobs based on the First Capable algorithm
+     * Schedules jobs based on the <b> First Capable </b> algorithm
      */
     @Override
     public void schedule() throws Exception {

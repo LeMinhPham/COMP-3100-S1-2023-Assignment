@@ -11,6 +11,9 @@ public class WFScheduler extends Scheduler {
         serverInitialCores = new TreeMap<>();
     }
 
+    /**
+     * Schedules jobs based on the <b> Worst Fit </b> algorithm
+     */
     @Override
     public void schedule() throws Exception {
         // Start communication

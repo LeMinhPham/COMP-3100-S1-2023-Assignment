@@ -6,6 +6,9 @@ public class BFScheduler extends Scheduler {
         super();
     }
 
+    /**
+     * Schedules jobs based on the <b> All To Largest </b> algorithm
+     */
     @Override
     public void schedule() throws Exception {
         // Start communication
