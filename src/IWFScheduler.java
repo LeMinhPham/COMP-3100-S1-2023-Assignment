@@ -2,25 +2,27 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 /**
- * This class implements the <b> Improved First Fit </b> scheduling algorithm,
- * which employs <b> First Fit </b> scheduling algorithm but is aware that
+ * This class implements the <b> Improved Worst Fit </b> scheduling algorithm,
+ * which employs <b> Worst Fit </b> scheduling algorithm but is aware that
  * backfilling is not allowed in ds-sim.
  */
 
-public class IFFScheduler extends Scheduler {
+public class IWFScheduler extends Scheduler {
     // Information of the current job
     String jobID = "";
     int requiredCore = 0;
     int requiredMemory = 0;
     int requiredDisk = 0;
 
-    // Information of the first readily available server
-    protected String firstReadilyAvailableServerType = "";
-    protected String firstReadilyAvailableServerID = "";
+    // Information of the worst readily available server
+    protected String worstReadilyAvailableServerType = "";
+    protected String worstReadilyAvailableServerID = "";
+    protected int worstReadilyAvailableServerCore = 0;
 
-    // Information of the first sufficient server regardless of availability
-    protected String firstSufficientServerType = "";
-    protected String firstSufficientServerID = "";
+    // Information of the worst sufficient server regardless of availability
+    protected String worstSufficientServerType = "";
+    protected String worstSufficientServerID = "";
+    protected int worstSufficientServerCore = 0;
 
     // Because booting servers do not show the scorrect number of available
     // resources after GETS Capable call, we need to use LSTJ for them.
@@ -30,14 +32,14 @@ public class IFFScheduler extends Scheduler {
     // Initial resources of the servers
     protected TreeMap<String, Integer[]> serverInitialResources;
 
-    public IFFScheduler() throws Exception {
+    public IWFScheduler() throws Exception {
         super();
         availableServers = new ArrayList<>();
         serverInitialResources = new TreeMap<>();
     }
 
     /**
-     * Schedules jobs based on the <b> First Fit </b> algorithm
+     * Schedules jobs based on the <b> Worst Fit </b> algorithm
      */
     @Override
     public void schedule() throws Exception {
@@ -85,10 +87,12 @@ public class IFFScheduler extends Scheduler {
                             new Integer[] { availableCore, availableMemory, availableDisk });
                 }
 
-                // First capable server is the first sufficient server
-                if (i == 0) {
-                    firstSufficientServerType = latestMessage[0];
-                    firstSufficientServerID = latestMessage[1];
+                // Find the worst sufficient server based on its initial cores
+                int serverInitialCores = serverInitialResources.get(latestMessage[0])[0];
+                if (serverInitialCores > worstSufficientServerCore) {
+                    worstSufficientServerType = latestMessage[0];
+                    worstSufficientServerID = latestMessage[1];
+                    worstSufficientServerCore = serverInitialCores;
                 }
 
                 // Store available servers for later check
@@ -103,16 +107,16 @@ public class IFFScheduler extends Scheduler {
             send("OK");
             receive();
 
-            // Find first-fit readily available server
-            findFirstFitServer();
+            // Find worst-fit readily available server
+            findWorstFitServer();
 
             // Schedule job
-            if (!firstReadilyAvailableServerType.equals("")) {
+            if (!worstReadilyAvailableServerType.equals("")) {
                 // If there is a readily available server, schedule to it
-                send("SCHD " + jobID + " " + firstReadilyAvailableServerType + " " + firstReadilyAvailableServerID);
+                send("SCHD " + jobID + " " + worstReadilyAvailableServerType + " " + worstReadilyAvailableServerID);
             } else {
-                // If there is no readily available, schedule to the first sufficient server
-                send("SCHD " + jobID + " " + firstSufficientServerType + " " + firstSufficientServerID);
+                // If there is no readily available, schedule to the worst sufficient server
+                send("SCHD " + jobID + " " + worstSufficientServerType + " " + worstSufficientServerID);
             }
             receive();
             reset();
@@ -125,10 +129,10 @@ public class IFFScheduler extends Scheduler {
     }
 
     /**
-     * Finds the first fit server in readily available servers,
+     * Finds the worst fit server in readily available servers,
      * i.e. <code> availableServers </code>
      */
-    protected void findFirstFitServer() throws Exception {
+    protected void findWorstFitServer() throws Exception {
         for (String[] server : availableServers) {
             String serverType = server[0];
             String serverID = server[1];
@@ -173,20 +177,19 @@ public class IFFScheduler extends Scheduler {
                 availableDisk = Integer.parseInt(server[6]);
             }
 
-            // Check for fitness
+            // Check for worst-fit
             if (availableCore >= requiredCore && availableMemory >= requiredMemory && availableDisk >= requiredDisk) {
                 // Check if the server has bot running and waiting jobs at the same time, which
                 // means this server cannot immediately execute the current job
                 int waitingJobs = Integer.parseInt(server[7]);
                 int runningJobs = Integer.parseInt(server[8]);
                 if (!(waitingJobs > 0 && runningJobs > 0)) {
-                    if (firstReadilyAvailableServerType.equals("")) {
-                        firstReadilyAvailableServerType = serverType;
-                        firstReadilyAvailableServerID = serverID;
-                        break;
+                    if (availableCore > worstReadilyAvailableServerCore) {
+                        worstReadilyAvailableServerType = serverType;
+                        worstReadilyAvailableServerID = serverID;
+                        worstReadilyAvailableServerCore = availableCore;
                     }
                 }
-
             }
         }
     }
@@ -199,10 +202,12 @@ public class IFFScheduler extends Scheduler {
         requiredCore = 0;
         requiredMemory = 0;
         requiredDisk = 0;
-        firstReadilyAvailableServerType = "";
-        firstReadilyAvailableServerID = "";
-        firstSufficientServerType = "";
-        firstSufficientServerID = "";
+        worstReadilyAvailableServerType = "";
+        worstReadilyAvailableServerID = "";
+        worstReadilyAvailableServerCore = 0;
+        worstSufficientServerType = "";
+        worstSufficientServerID = "";
+        worstSufficientServerCore = 0;
         availableServers.clear();
     }
 }

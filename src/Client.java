@@ -43,6 +43,10 @@ public class Client {
             scheduler = new LWTScheduler();
         } else if (args[0].equalsIgnoreCase("iff")) {
             scheduler = new IFFScheduler();
+        } else if (args[0].equalsIgnoreCase("ibf")) {
+            scheduler = new IBFScheduler();
+        } else if (args[0].equalsIgnoreCase("iwf")) {
+            scheduler = new IWFScheduler();
         } else {
             scheduler = new ATLScheduler();
         }
