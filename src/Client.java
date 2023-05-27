@@ -39,6 +39,8 @@ public class Client {
             scheduler = new BFScheduler();
         } else if (args[0].equalsIgnoreCase("wf")) {
             scheduler = new WFScheduler();
+        } else if (args[0].equalsIgnoreCase("lwt")) {
+            scheduler = new LWTScheduler();
         } else {
             scheduler = new ATLScheduler();
         }
