@@ -157,8 +157,6 @@ public class LWTScheduler extends Scheduler {
             } else if (state.equals("inactive") && firstInactiveServerType.equals("")) {
                 firstInactiveServerType = serverType;
                 firstInactiveServerID = serverID;
-                minWaitingTime = Integer.MAX_VALUE;
-                break;
             } else if (state.equals("active") || state.equals("booting")) {
 
                 // Traverse job records
