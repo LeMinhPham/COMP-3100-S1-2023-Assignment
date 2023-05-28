@@ -15,13 +15,12 @@ import java.util.TreeMap;
  * 
  * <p>
  * In case there are 2 or more server with the same estimated waiting time, the
- * server that has the least number of available cores at the time the current
- * job is estimated to be executed will be chosen.
+ * first server will be selected
  * </p>
  * 
  * <p>
  * If there are idle servers, the first one will be chosen as it has the least
- * number of available cores and waiting time.
+ * waiting time.
  * </p>
  * 
  * <p>
@@ -139,7 +138,6 @@ public class LWTScheduler extends Scheduler {
         String firstInactiveServerID = "";
 
         int minWaitingTime = Integer.MAX_VALUE;
-        int bestServerCore = Integer.MAX_VALUE;
 
         for (String[] server : capableServers) {
             String serverType = server[0];
@@ -179,15 +177,11 @@ public class LWTScheduler extends Scheduler {
                 send("OK");
                 receive();
 
-                List<Integer> estimates = estimateWaitingTime(runningJobs, waitingJobs, serverType, state);
-                int waitingTime = estimates.get(0);
-                int availableCore = estimates.get(1);
+                int waitingTime = estimateWaitingTime(runningJobs, waitingJobs, serverType, state);
 
-                if (waitingTime < minWaitingTime
-                        || (waitingTime == minWaitingTime && availableCore < bestServerCore)) {
+                if (waitingTime < minWaitingTime) {
                     bestServerType = serverType;
                     bestServerID = serverID;
-                    bestServerCore = availableCore;
                 }
 
             }
@@ -210,7 +204,7 @@ public class LWTScheduler extends Scheduler {
      * @return A list contains 2 element: estimated waiting time and available cores
      *         at the time of allocating the current job to this server
      */
-    protected List<Integer> estimateWaitingTime(
+    protected int estimateWaitingTime(
             List<String[]> runningJobs,
             List<String[]> waitingJobs,
             String serverType,
@@ -319,7 +313,7 @@ public class LWTScheduler extends Scheduler {
 
         }
 
-        return List.of(waitingTime, availableCore);
+        return waitingTime;
     }
 
     /**
