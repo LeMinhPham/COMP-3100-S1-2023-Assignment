@@ -8,6 +8,10 @@ This is the repository for the individual project in COMP3100 Session 1 2023. Th
 
 This stage implements a plain/vanilla version of client-side simulator that acts as a simple job dispatcher. The scheduling algorithm used in this stage is Largest-Round-Robin, which sends each job to a server of the largest type in a round-robin fashion.
 
+# Stage 2
+
+This stage implements four new scheduling algorithms: Least-Waiting-Time, Improved-First-Fit, Improved-Best-Fit, and Improved-Worst-Fit. Tests using the demo test suit provided in iLearn suggests that "core scheduling" (scheduling based on the number of cores) is more effective in optimizing the turnaround time when there is no job backfilling or preemption.
+
 # Run a simulation
 
 You can run the simulation by going to the test folder and run the following commands in command line:
